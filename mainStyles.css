@@ -1,0 +1,40 @@
+/* Reset basico para evitar scroll occidental en la tablet */
+body, html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Bloquea cualquier scroll */
+    background-color: #121212; /* Un negro más suave y premium */
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Tipografia elegante */
+.letter-spacing-wide {
+    letter-spacing: 4px;
+}
+.tracking-wider {
+    letter-spacing: 2px;
+}
+
+/* Animacion de entrada para el logo */
+.fade-in-logo {
+    animation: fadeIn 2s ease-in-out;
+}
+
+/* Efecto glow (resplandor) para la barra de progreso */
+.custom-glow {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.5);
+    transition: width 0.1s linear; /* Hace que la barra avance fluido */
+}
+
+/* Animacion para desaparecer la pantalla de carga */
+.fade-out-screen {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1s ease-out, visibility 1s ease-out;
+}
+
+/* Keyframes */
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
