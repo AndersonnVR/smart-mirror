@@ -1,40 +1,116 @@
-/* Reset basico para evitar scroll occidental en la tablet */
+/* Importar tipografía del manual de marca */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
+:root {
+    --fabelia-primary: #174DA3;
+    --fabelia-secondary: #6086BC;
+    --fabelia-light: #F4F5F7;
+    --fabelia-beige: #F7E9D7;
+    --fabelia-white: #FFFFFF;
+    --bg-dark: #0a0a0a; /* Fondo oscuro premium */
+    --panel-bg: #151515; /* Contraste sutil para tarjetas */
+}
+
+/* Reset básico para la tablet */
 body, html {
     margin: 0;
     padding: 0;
-    overflow: hidden; /* Bloquea cualquier scroll */
-    background-color: #121212; /* Un negro más suave y premium */
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden; /* Bloqueo estricto de scroll */
+    background-color: var(--bg-dark);
+    font-family: 'Montserrat', sans-serif;
+    color: var(--fabelia-light);
 }
 
-/* Tipografia elegante */
-.letter-spacing-wide {
-    letter-spacing: 4px;
+/* Tipografía */
+h1, h2, h3, h4, h5, h6, .fw-semibold {
+    font-weight: 600;
 }
-.tracking-wider {
-    letter-spacing: 2px;
-}
-
-/* Animacion de entrada para el logo */
-.fade-in-logo {
-    animation: fadeIn 2s ease-in-out;
+p, span, .fw-regular {
+    font-weight: 400;
 }
 
-/* Efecto glow (resplandor) para la barra de progreso */
+.letter-spacing-wide { letter-spacing: 4px; }
+.tracking-wider { letter-spacing: 2px; }
+
+/* Refactorización: Animaciones y barra de carga */
+.fade-in-logo { animation: fadeIn 2s ease-in-out; }
+
 .custom-glow {
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.5);
-    transition: width 0.1s linear; /* Hace que la barra avance fluido */
+    background-color: var(--fabelia-primary) !important;
+    box-shadow: 0 0 15px rgba(23, 77, 163, 0.8), 0 0 30px rgba(96, 134, 188, 0.5);
+    transition: width 0.1s linear;
 }
 
-/* Animacion para desaparecer la pantalla de carga */
 .fade-out-screen {
     opacity: 0;
     visibility: hidden;
     transition: opacity 1s ease-out, visibility 1s ease-out;
 }
 
-/* Keyframes */
 @keyframes fadeIn {
     0% { opacity: 0; transform: translateY(20px); }
     100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Estilos específicos para la estructura principal */
+.main-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 2rem;
+    gap: 1.5rem;
+}
+
+.thumbnail-col img {
+    width: 60px;
+    height: 80px;
+    object-fit: cover;
+    border: 2px solid transparent;
+    cursor: pointer;
+}
+.thumbnail-col img:hover, .thumbnail-col img.active {
+    border-color: var(--fabelia-primary);
+}
+
+.main-image-col img {
+    height: 100%;
+    max-height: 45vh;
+    object-fit: contain;
+}
+
+.size-btn {
+    width: 45px;
+    height: 45px;
+    border: 1px solid var(--fabelia-secondary);
+    color: var(--fabelia-white);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+.size-btn.active {
+    background: var(--fabelia-primary);
+    border-color: var(--fabelia-primary);
+}
+
+.btn-fabelia {
+    background-color: var(--fabelia-primary);
+    color: var(--fabelia-white);
+    font-weight: 600;
+    padding: 1rem;
+    border: none;
+    transition: background-color 0.3s;
+}
+.btn-fabelia:hover {
+    background-color: var(--fabelia-secondary);
+    color: var(--fabelia-white);
+}
+
+.cross-selling-card {
+    background-color: var(--panel-bg);
+    border: 1px solid #333;
+    border-radius: 8px;
 }
