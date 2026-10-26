@@ -164,7 +164,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const product = getProductById(productId);
         if(!product) return;
 
-        // Corrección 1: Actualizar el estado global del producto activo
         currentSelectedProduct = product; 
 
         document.getElementById('mainBrand').textContent = product.brand;
@@ -288,31 +287,51 @@ document.addEventListener("DOMContentLoaded", () => {
         mainApp.scrollTop = 0;
     }
 
-    // Corrección 2: Lógica de Swipe Universal (Soporta Mouse y Pantalla Táctil)
+    // --- LÓGICA DE SWIPE TÁCTIL (CORREGIDA Y OPTIMIZADA) ---
     const swipeContainer = document.getElementById('swipeContainer');
     const swipeWrapper = document.getElementById('swipeWrapper');
     const swipeDots = document.querySelectorAll('.swipe-dot');
+    
     let startX = 0;
     let currentSlide = 0;
+    let isDragging = false;
 
-    swipeContainer.addEventListener('pointerdown', (e) => {
-        startX = e.clientX;
-    }, {passive: true});
+    // Prevenir selección de texto y scroll nativo horizontal
+    swipeContainer.style.userSelect = 'none';
+    swipeContainer.style.webkitUserSelect = 'none';
+    swipeContainer.style.touchAction = 'pan-y'; // Permite scroll vertical pero bloquea gestos horizontales del navegador
+    swipeContainer.addEventListener('dragstart', (e) => e.preventDefault());
 
-    swipeContainer.addEventListener('pointerup', (e) => {
-        let endX = e.clientX;
-        if (startX - endX > 50) {
-            currentSlide = 1;
-            updateSwipe();
-        } else if (endX - startX > 50) {
-            currentSlide = 0;
-            updateSwipe();
+    const dragStart = (e) => {
+        isDragging = true;
+        startX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+    };
+
+    const dragEnd = (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        
+        let endX = e.type.includes('mouse') ? e.pageX : e.changedTouches[0].clientX;
+        let diffX = startX - endX;
+
+        // Umbral de 40px para disparar el cambio
+        if (diffX > 40) {
+            currentSlide = 1; // Mueve a Especificaciones
+        } else if (diffX < -40) {
+            currentSlide = 0; // Mueve a Descripción
         }
-    }, {passive: true});
+        updateSwipe();
+    };
 
-    swipeContainer.addEventListener('dragstart', (e) => {
-        e.preventDefault();
-    });
+    // Soporte táctil (Mobile / Tablet real)
+    swipeContainer.addEventListener('touchstart', dragStart, { passive: true });
+    swipeContainer.addEventListener('touchend', dragEnd, { passive: true });
+    swipeContainer.addEventListener('touchcancel', dragEnd, { passive: true });
+
+    // Soporte mouse (Laptop / Simulación)
+    swipeContainer.addEventListener('mousedown', dragStart);
+    swipeContainer.addEventListener('mouseup', dragEnd);
+    swipeContainer.addEventListener('mouseleave', dragEnd);
 
     function updateSwipe() {
         swipeWrapper.style.transform = `translateX(-${currentSlide * 50}%)`;
