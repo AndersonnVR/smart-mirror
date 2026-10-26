@@ -146,19 +146,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 setTimeout(() => {
                     switchScreen(mirrorAnimationScreen, mainApp);
-                    // Reset scroll to top
                     mainApp.scrollTop = 0;
                 }, 800);
             }, 2200);
         }, 500); 
     }
 
-    // Botón de salir del probador
     window.exitSmartMirror = function() {
         switchScreen(mainApp, garmentSelection);
     }
     
-    // Simular solicitar prenda
     window.requestGarment = function() {
         successModal.show();
     }
@@ -166,6 +163,9 @@ document.addEventListener("DOMContentLoaded", () => {
     function loadMainSmartMirrorUI(productId) {
         const product = getProductById(productId);
         if(!product) return;
+
+        // Corrección 1: Actualizar el estado global del producto activo
+        currentSelectedProduct = product; 
 
         document.getElementById('mainBrand').textContent = product.brand;
         document.getElementById('mainTitle').textContent = product.name;
@@ -196,7 +196,6 @@ document.addEventListener("DOMContentLoaded", () => {
         product.colors.forEach((color, idx) => {
             const activeClass = idx === 0 ? 'active' : '';
             
-            // Asignación de colores más precisa basada en el catálogo Fabelia
             let hex = color.hexCode;
             if(!hex) {
                 const cName = color.colorName.toLowerCase();
@@ -225,7 +224,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         loadCrossSelling(currentGender || 'mujer', productId);
         
-        // Reiniciar Swipe a Descripción
         currentSlide = 0;
         updateSwipe();
     }
@@ -290,19 +288,19 @@ document.addEventListener("DOMContentLoaded", () => {
         mainApp.scrollTop = 0;
     }
 
-    // --- LÓGICA DE SWIPE TÁCTIL ---
+    // Corrección 2: Lógica de Swipe Universal (Soporta Mouse y Pantalla Táctil)
     const swipeContainer = document.getElementById('swipeContainer');
     const swipeWrapper = document.getElementById('swipeWrapper');
     const swipeDots = document.querySelectorAll('.swipe-dot');
     let startX = 0;
     let currentSlide = 0;
 
-    swipeContainer.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
+    swipeContainer.addEventListener('pointerdown', (e) => {
+        startX = e.clientX;
     }, {passive: true});
 
-    swipeContainer.addEventListener('touchend', (e) => {
-        let endX = e.changedTouches[0].clientX;
+    swipeContainer.addEventListener('pointerup', (e) => {
+        let endX = e.clientX;
         if (startX - endX > 50) {
             currentSlide = 1;
             updateSwipe();
@@ -311,6 +309,10 @@ document.addEventListener("DOMContentLoaded", () => {
             updateSwipe();
         }
     }, {passive: true});
+
+    swipeContainer.addEventListener('dragstart', (e) => {
+        e.preventDefault();
+    });
 
     function updateSwipe() {
         swipeWrapper.style.transform = `translateX(-${currentSlide * 50}%)`;

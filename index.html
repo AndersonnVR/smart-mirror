@@ -66,10 +66,10 @@
 
     <!-- PANTALLA 3: PRENDAS SELECCIONADAS (FITTING ROOM) -->
     <section id="selectedGarmentsScreen" class="screen d-none hidden-fade vh-100 vw-100 bg-dark text-white p-5 d-flex flex-column align-items-center justify-content-center position-absolute top-0 start-0 z-2">
-        <img src="./img/isotipo.png" alt="Fabelia" class="position-absolute top-0 end-0 m-4" style="width: 60px;">
+        <img src="./img/isotipo.PNG" alt="Fabelia" class="position-absolute top-0 end-0 m-4" style="width: 60px;">
         
         <h2 class="fw-semibold text-uppercase tracking-wider mb-2" style="color: var(--fabelia-secondary);">Probador Virtual</h2>
-        <p class="text-muted mb-5">Selecciona una prenda para encender el espejo</p>
+        <p class="mb-5">Selecciona una prenda para encender el espejo</p>
         
         <div id="selectedGarmentsGrid" class="d-flex gap-4 flex-wrap justify-content-center w-100">
             <!-- Renderizado JS de las prendas confirmadas -->
@@ -96,11 +96,11 @@
             <div class="row mb-5">
                 <!-- Carrusel Vertical Thumbnails -->
                 <div class="col-2 d-flex flex-column align-items-center justify-content-center gap-3 position-relative">
-                    <div class="text-muted fs-3 cursor-pointer active-scale" onclick="scrollThumbs(-1)">&#708;</div>
+                    <div class="fs-3 cursor-pointer active-scale" onclick="scrollThumbs(-1)">&#708;</div>
                     <div id="mainThumbnails" class="d-flex flex-column gap-3 overflow-hidden" style="max-height: 380px;">
                         <!-- Thumbs JS -->
                     </div>
-                    <div class="text-muted fs-3 cursor-pointer active-scale" onclick="scrollThumbs(1)">&#709;</div>
+                    <div class="fs-3 cursor-pointer active-scale" onclick="scrollThumbs(1)">&#709;</div>
                 </div>
                 
                 <!-- Imagen Principal (Altura y cover fijo) -->
@@ -128,7 +128,7 @@
                     </div>
 
                     <div class="mb-5">
-                        <p class="mb-3 small text-uppercase text-center text-muted">Prueba una nueva talla</p>
+                        <p class="mb-3 small text-uppercase text-center">Prueba una nueva talla</p>
                         <div id="mainSizes" class="d-flex flex-wrap justify-content-center gap-2">
                             <!-- Tallas JS -->
                         </div>
@@ -188,7 +188,7 @@
                 <div class="modal-body text-center p-5">
                     <h4 class="fw-semibold mb-4 text-uppercase tracking-wider" style="color: var(--fabelia-light);">¿Deseas probarte esta prenda?</h4>
                     <img id="modalGarmentImg" src="" class="img-fluid rounded shadow mb-3" style="max-height: 250px; border: 1px solid var(--fabelia-secondary); object-fit: cover;">
-                    <h5 id="modalGarmentName" class="fw-regular text-muted mb-5"></h5>
+                    <h5 id="modalGarmentName" class="fw-regular mb-5"></h5>
                     
                     <div class="d-flex justify-content-center gap-3">
                         <button type="button" class="btn btn-outline-secondary px-4 py-2 text-uppercase active-scale" data-bs-dismiss="modal">Cancelar</button>
@@ -206,7 +206,7 @@
                 <div class="modal-body text-center p-5">
                     <div class="mb-3 text-success" style="font-size: 4rem; line-height: 1;">&#10004;</div>
                     <h4 class="fw-semibold mb-3 text-uppercase tracking-wider" style="color: var(--fabelia-light);">¡Prenda Solicitada!</h4>
-                    <p class="text-muted mb-5">Un asistente de Fabelia te traerá la prenda a la brevedad. Sigue explorando el catálogo o probando combinaciones.</p>
+                    <p class="mb-5">Un asistente de Fabelia te traerá la prenda a la brevedad. Sigue explorando el catálogo o probando combinaciones.</p>
                     
                     <button type="button" class="btn btn-fabelia px-5 py-2 text-uppercase fw-semibold shadow active-scale w-100" data-bs-dismiss="modal">Entendido</button>
                 </div>
