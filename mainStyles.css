@@ -1,4 +1,3 @@
-/* Importar tipografía del manual de marca */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
 
 :root {
@@ -7,110 +6,140 @@
     --fabelia-light: #F4F5F7;
     --fabelia-beige: #F7E9D7;
     --fabelia-white: #FFFFFF;
-    --bg-dark: #0a0a0a; /* Fondo oscuro premium */
-    --panel-bg: #151515; /* Contraste sutil para tarjetas */
+    --bg-dark: #272727; 
+    --panel-bg: #1f1f1f; 
 }
 
-/* Reset básico para la tablet */
 body, html {
     margin: 0;
     padding: 0;
     width: 100vw;
     height: 100vh;
-    overflow: hidden; /* Bloqueo estricto de scroll */
+    overflow: hidden; 
     background-color: var(--bg-dark);
     font-family: 'Montserrat', sans-serif;
     color: var(--fabelia-light);
 }
 
-/* Tipografía */
-h1, h2, h3, h4, h5, h6, .fw-semibold {
-    font-weight: 600;
-}
-p, span, .fw-regular {
-    font-weight: 400;
-}
+h1, h2, h3, h4, h5, h6, .fw-semibold { font-weight: 600; }
+p, span, .fw-regular { font-weight: 400; }
 
 .letter-spacing-wide { letter-spacing: 4px; }
 .tracking-wider { letter-spacing: 2px; }
+.cursor-pointer { cursor: pointer; }
 
-/* Refactorización: Animaciones y barra de carga */
+/* Ocultar Scrollbars */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Transiciones Suaves de Pantalla */
+.screen {
+    transition: opacity 0.4s ease-in-out;
+    opacity: 1;
+}
+.hidden-fade {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Efectos Táctiles */
+.active-scale {
+    transition: transform 0.1s ease;
+}
+.active-scale:active {
+    transform: scale(0.95);
+}
+.active-border-primary:active {
+    border-color: var(--fabelia-primary) !important;
+}
+
+/* Animaciones Carga */
 .fade-in-logo { animation: fadeIn 2s ease-in-out; }
-
 .custom-glow {
     background-color: var(--fabelia-primary) !important;
     box-shadow: 0 0 15px rgba(23, 77, 163, 0.8), 0 0 30px rgba(96, 134, 188, 0.5);
     transition: width 0.1s linear;
 }
-
-.fade-out-screen {
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 1s ease-out, visibility 1s ease-out;
-}
-
 @keyframes fadeIn {
     0% { opacity: 0; transform: translateY(20px); }
     100% { opacity: 1; transform: translateY(0); }
 }
 
-/* Estilos específicos para la estructura principal */
-.main-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    padding: 2rem;
-    gap: 1.5rem;
+/* Animación del encendido del Smart Mirror */
+.mirror-glow {
+    width: 2px;
+    height: 0;
+    background-color: var(--fabelia-white);
+    box-shadow: 0 0 20px var(--fabelia-primary), 0 0 50px var(--fabelia-secondary), 0 0 100px var(--fabelia-white);
+    opacity: 0;
+}
+.animate-mirror {
+    animation: mirrorBoot 2.2s forwards ease-in-out;
+}
+@keyframes mirrorBoot {
+    0% { opacity: 0; height: 0; }
+    20% { opacity: 1; height: 100vh; width: 2px; background-color: var(--fabelia-primary); }
+    50% { opacity: 1; height: 100vh; width: 100vw; background-color: var(--fabelia-white); }
+    85% { opacity: 1; height: 100vh; width: 100vw; background-color: var(--fabelia-white); }
+    100% { opacity: 1; height: 100vh; width: 100vw; background-color: #000000; box-shadow: none; }
 }
 
-.thumbnail-col img {
-    width: 60px;
-    height: 80px;
+/* UI Smart Mirror */
+.thumbnail-img {
+    width: 65px;
+    height: 90px;
     object-fit: cover;
     border: 2px solid transparent;
-    cursor: pointer;
+    transition: border-color 0.2s ease;
 }
-.thumbnail-col img:hover, .thumbnail-col img.active {
-    border-color: var(--fabelia-primary);
-}
-
-.main-image-col img {
-    height: 100%;
-    max-height: 45vh;
-    object-fit: contain;
+.thumbnail-img.active {
+    border-color: var(--fabelia-white);
 }
 
 .size-btn {
     width: 45px;
     height: 45px;
-    border: 1px solid var(--fabelia-secondary);
+    border: 1px solid #555;
     color: var(--fabelia-white);
     background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 4px;
+    transition: all 0.2s ease;
 }
 .size-btn.active {
-    background: var(--fabelia-primary);
-    border-color: var(--fabelia-primary);
+    border-color: var(--fabelia-white);
+    background: rgba(255,255,255,0.1);
+}
+
+.color-swatch {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: border-color 0.2s ease;
+}
+.color-swatch.active {
+    border-color: var(--fabelia-white);
 }
 
 .btn-fabelia {
     background-color: var(--fabelia-primary);
     color: var(--fabelia-white);
-    font-weight: 600;
-    padding: 1rem;
     border: none;
-    transition: background-color 0.3s;
-}
-.btn-fabelia:hover {
-    background-color: var(--fabelia-secondary);
-    color: var(--fabelia-white);
 }
 
-.cross-selling-card {
-    background-color: var(--panel-bg);
-    border: 1px solid #333;
-    border-radius: 8px;
+/* Swipe Área */
+.transition-transform {
+    transition: transform 0.3s ease-out;
+}
+.swipe-dot {
+    width: 30px;
+    height: 3px;
+    background-color: #444;
+    transition: background 0.3s;
+}
+.swipe-dot.active {
+    background-color: var(--fabelia-secondary);
 }
