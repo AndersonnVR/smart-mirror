@@ -132,6 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     window.startMirrorAnimation = function (productId) {
+        playSound('boot-up'); // Llamada al sintetizador elegante
         switchScreen(selectedGarmentsScreen, mirrorAnimationScreen);
 
         setTimeout(() => {
@@ -156,11 +157,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     window.requestGarment = function () {
+        playSound('success'); // Llamada al sonido de validación
         successModal.show();
     }
 
     // --- LÓGICA DE ILUMINACIÓN DEL ESPEJO ---
     window.toggleLightMenu = function () {
+        playSound('light-switch');
         const menu = document.getElementById('lightOptionsMenu');
         if (menu.classList.contains('d-none')) {
             menu.classList.remove('d-none');
@@ -172,6 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     window.setLightMode = function (modeClass, btnEl) {
+        playSound('light-switch');
         // Reiniciar botones
         document.querySelectorAll('.light-mode-btn').forEach(btn => {
             btn.classList.remove('bg-white', 'text-dark', 'fw-semibold');
@@ -181,11 +185,11 @@ document.addEventListener("DOMContentLoaded", () => {
         btnEl.classList.remove('text-white', 'border-white', 'border');
         btnEl.classList.add('bg-white', 'text-dark', 'fw-semibold');
 
-        // Cambiar modo en el cristal aplicando la clase CSS respectiva
+        // Cambiar modo en el cristal
         const glass = document.getElementById('mirrorGlass');
         glass.className = `mirror-glass w-100 h-100 position-relative text-white overflow-hidden d-flex flex-column ${modeClass}`;
 
-        // Auto-cerrar el menú tras una pequeña pausa para confirmar selección visualmente
+        // Auto-cerrar el menú tras una pequeña pausa
         setTimeout(() => {
             const menu = document.getElementById('lightOptionsMenu');
             if (menu && !menu.classList.contains('d-none')) {
@@ -344,7 +348,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!isDragging) return;
         isDragging = false;
 
-        // Corrección del orden de las coordenadas (mouse vs táctil)
+        // Coordenadas corregidas (mouse vs tactil)
         let endX = e.type.includes('mouse') ? e.pageX : e.changedTouches[0].clientX;
         let diffX = startX - endX;
 
@@ -371,39 +375,102 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- LÓGICA DE AUDIO GLOBAL (WEB AUDIO API) ---
+    // --- LÓGICA DE AUDIO GLOBAL (WEB AUDIO API SINTETIZADA) ---
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    function playClickSound() {
+    function playSound(type) {
         // Reanudar contexto si el navegador lo suspende por políticas de autoplay
         if (audioCtx.state === 'suspended') {
             audioCtx.resume();
         }
 
-        const oscillator = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
+        const t = audioCtx.currentTime;
 
-        // Configuración de un tono corto, suave y futurista (Bloop)
-        oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.1);
+        if (type === 'light-switch') {
+            // Sonido de switch mecánico / foquito encendiendo
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(1200, t);
+            osc.frequency.exponentialRampToValueAtTime(100, t + 0.04);
+            gain.gain.setValueAtTime(0.08, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(t); osc.stop(t + 0.04);
 
-        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime); // Volumen bajo para no saturar
-        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1); // Fade-out de 100ms
+        } else if (type === 'success') {
+            // Campana de validación (C5 luego G5)
+            const playNote = (freq, startTime, duration) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, startTime);
+                gain.gain.setValueAtTime(0, startTime);
+                gain.gain.linearRampToValueAtTime(0.1, startTime + 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(startTime); osc.stop(startTime + duration);
+            };
+            playNote(523.25, t, 0.2); // C5
+            playNote(783.99, t + 0.15, 0.4); // G5 (Superpuesta ligeramente)
 
-        oscillator.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
+        } else if (type === 'boot-up') {
+            // Acorde elegante futurista (Swell)
+            const freqs = [329.63, 440.00, 659.25]; // E4, A4, E5
+            freqs.forEach(f => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(f, t);
+                gain.gain.setValueAtTime(0, t);
+                gain.gain.linearRampToValueAtTime(0.05, t + 0.8); // Aparece suavemente
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 2.5); // Se desvanece
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(t); osc.stop(t + 2.5);
+            });
 
-        oscillator.start();
-        oscillator.stop(audioCtx.currentTime + 0.1);
+        } else if (type === 'default-mirror') {
+            // Tonalidad de cristal/agua (Pantalla Smart Mirror)
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(1100, t);
+            osc.frequency.exponentialRampToValueAtTime(500, t + 0.1);
+            gain.gain.setValueAtTime(0.05, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(t); osc.stop(t + 0.1);
+
+        } else {
+            // Tonalidad menú estándar (Pantallas iniciales)
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(600, t);
+            osc.frequency.exponentialRampToValueAtTime(250, t + 0.1);
+            gain.gain.setValueAtTime(0.08, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(t); osc.stop(t + 0.1);
+        }
     }
 
-    // Delegación global: intercepta todos los toques en la tablet
+    // Delegación global: intercepta todos los toques en la tablet para emitir sonidos estándar
     document.addEventListener('click', (e) => {
-        // Verifica si el elemento tocado tiene clases interactivas
+        // Verifica si el elemento tocado es interactivo
         const isInteractive = e.target.closest('button, .cursor-pointer, .active-scale, .gender-card');
+
         if (isInteractive) {
-            playClickSound();
+            // Ignora los botones que ya tienen sonidos específicos asignados
+            const isLightButton = e.target.closest('[onclick="toggleLightMenu()"], .light-mode-btn');
+            const isRequestButton = e.target.closest('[onclick="requestGarment()"]');
+            const isStartMirrorBtn = e.target.closest('[onclick^="startMirrorAnimation"]');
+
+            if (isLightButton || isRequestButton || isStartMirrorBtn) return;
+
+            // Determina la pantalla activa para cambiar la personalidad del sonido
+            const isMirrorScreen = e.target.closest('#mainApp');
+            playSound(isMirrorScreen ? 'default-mirror' : 'default-menu');
         }
     });
 
